@@ -74,7 +74,6 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
         await sharp(file.buffer).resize(2000, 1333).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/tours/${fileName}`);
         req.body.images.push(fileName);
     }));
-    console.log(req.body);
 
     next();
 });
@@ -180,7 +179,6 @@ exports.monthlyPlans = catchAsync(async (req, res, next) => {
 exports.getToursWithin = catchAsync(async (req, res, next) => {
     const { distance, latlng, unit } = req.params;
     const [lat, lng] = latlng.split(',');
-    // console.log(distance, lat, lng, unit);
     if (!lat || !lng) {
         return next(new appError('please give center-coordinates in lat,lng format', 400))
     }
@@ -203,7 +201,6 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 exports.getDistances = catchAsync(async (req, res, next) => {
     const { latlng, unit } = req.params;
     const [lat, lng] = latlng.split(',');
-    // console.log(distance, lat, lng, unit);
     if (!lat || !lng) {
         return next(new appError('please give center-coordinates in lat,lng format', 400));
     }

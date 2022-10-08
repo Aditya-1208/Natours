@@ -64,7 +64,6 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
 //     // this.reviewDoc = await this.findOne();
 //     // So fix is like this, we use a method called clone to make a clone of query and execute it!
 //     this.reviewDoc = await this.clone();
-//     console.log(this.reviewDoc);
 //     next;
 // })
 

@@ -165,7 +165,6 @@ tourSchema.pre('save', function (next) {
 // })
 
 // tourSchema.post('save',(document,next)=>{
-//     console.log(document);
 //     next();
 // })
 

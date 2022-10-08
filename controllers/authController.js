@@ -43,14 +43,12 @@ exports.signup = catchAsync(async (req, res, next) => {
         role: req.body.role
     });
     const url = `${req.protocol}://${req.get('host')}/me`;
-    console.log(url);
     await new Email(newUser, url).sendWelcome();
     createSendToken(newUser, 201, res);
 })
 
 
 exports.login = catchAsync(async (req, res, next) => {
-    console.log('logging you in');
     const { email, password } = req.body;
     //1 if no email or password
     if (!email || !password)
@@ -70,7 +68,6 @@ exports.login = catchAsync(async (req, res, next) => {
 })
 
 exports.logout = (req, res) => {
-    // console.log('logout');
     // res.cookie('jwt', 'logged out', {
     //     expiresIn: Date.now() + 10 * 10000,
     //     httpOnly: true
@@ -140,7 +137,6 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
     return catchAsync(async (req, res, next) => {
-        console.log(req.user.role);
         if (!roles.includes(req.user.role))
             return next(new appError('You don\'t have permission to perform this action', 403))
         next()
@@ -150,7 +146,6 @@ exports.restrictTo = (...roles) => {
 exports.forgotPassword = catchAsync(async (req, res, next) => {
 
     //1 Get user
-    console.log(req.body.email);
     const user = await User.findOne({ email: req.body.email });
     if (!user)
         return next(new appError('User not found', 404));
@@ -174,7 +169,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         user.passResetToken = undefined;
         user.passResetExpires = undefined;
         await user.save({ validateBeforeSave: false })
-        console.log(err);
         return next(new appError('error sending email, try again later', 500))
 
     }
@@ -191,7 +185,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 exports.resetPassword = catchAsync(async (req, res, next) => {
 
     //1 Take reset token from req params and hash it to compare with one stored in db
-    console.log(req.params);
     const hashedToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex');
 
     //2 find user based on token and also token not expired
@@ -205,7 +198,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     user.confirmPassword = req.body.confirmPassword;
     user.passResetToken = undefined;
     user.passResetExpires = undefined;
-    console.log(user);
 
     await user.save();
 
@@ -219,7 +211,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 exports.updatePassword = catchAsync(
     async (req, res, next) => {
         //1 get current user
-        console.log(req.body);
         const currentUser = await User.findById(req.user.id).select('+password');
         if (!currentUser)
             return next(new appError('Invalid user', 401));
@@ -232,7 +223,6 @@ exports.updatePassword = catchAsync(
         //3 If so,update password 
         currentUser.password = req.body.newPassword;
         currentUser.confirmPassword = req.body.confirmNewPassword;
-        console.log(currentUser);
         await currentUser.save();
 
         //log in the user
